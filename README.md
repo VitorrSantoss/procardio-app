@@ -1,50 +1,198 @@
-# Welcome to your Expo app 👋
+# ProCardio App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> Aplicação móvel multiplataforma para monitoramento e suporte a pacientes com condições cardiovasculares.
 
-## Get started
+---
 
-1. Install dependencies
+## Sumário
 
-   ```bash
-   npm install
-   ```
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Arquitetura](#arquitetura)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Pré-requisitos](#pré-requisitos)
+- [Instalação e Execução](#instalação-e-execução)
+- [Scripts Disponíveis](#scripts-disponíveis)
+- [Configuração](#configuração)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## Sobre o Projeto
 
-In the output, you'll find options to open the app in a
+O **ProCardio App** é uma aplicação móvel desenvolvida com foco em usuários que necessitam de acompanhamento contínuo de saúde cardiovascular. O sistema tem como objetivo fornecer uma interface acessível, responsiva e de alta performance para o registro, visualização e monitoramento de dados clínicos relevantes ao cuidado cardiológico.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+A aplicação foi concebida no contexto de desenvolvimento de soluções digitais em saúde (_mHealth_), alinhando-se às diretrizes de usabilidade e acessibilidade em dispositivos móveis. Seu desenvolvimento adota práticas modernas de engenharia de software, incluindo tipagem estática, roteamento baseado em arquivos e suporte nativo a múltiplas plataformas (iOS, Android e Web).
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Objetivos
 
-## Get a fresh project
+- Oferecer ao paciente uma interface intuitiva para o acompanhamento de sua condição cardiovascular;
+- Facilitar o registro e a consulta de dados clínicos de forma segura e estruturada;
+- Garantir compatibilidade multiplataforma sem comprometer a experiência do usuário;
+- Servir como base extensível para integração com sistemas de saúde eletrônicos (EHR/EMR).
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
+## Tecnologias Utilizadas
+
+| Tecnologia                                                                               | Versão   | Finalidade                                                            |
+| ---------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| [React Native](https://reactnative.dev/)                                                 | 0.81.5   | Framework base para desenvolvimento mobile multiplataforma            |
+| [Expo](https://expo.dev/)                                                                | ~54.0.33 | Plataforma de desenvolvimento, build e deploy                         |
+| [Expo Router](https://expo.github.io/router/)                                            | ~6.0.23  | Roteamento baseado em sistema de arquivos (file-based routing)        |
+| [React](https://react.dev/)                                                              | 19.1.0   | Biblioteca de construção de interfaces declarativas                   |
+| [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)           | ~4.1.1   | Animações de alta performance em thread nativa                        |
+| [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/) | ~2.28.0  | Gerenciamento de gestos com suporte nativo                            |
+| [React Navigation](https://reactnavigation.org/)                                         | ^7.x     | Navegação entre telas e gerenciamento de pilhas de rotas              |
+| [TypeScript](https://www.typescriptlang.org/)                                            | ~5.9.2   | Superset tipado de JavaScript para maior segurança e manutenibilidade |
+| [Expo Vector Icons](https://icons.expo.fyi/)                                             | ^15.0.3  | Biblioteca de ícones vetoriais multiplataforma                        |
+
+---
+
+## Arquitetura
+
+O projeto segue a arquitetura de **roteamento baseado em sistema de arquivos** (File-Based Routing), provida pelo Expo Router. Neste modelo, cada arquivo dentro do diretório `app/` corresponde automaticamente a uma rota navegável da aplicação, eliminando a necessidade de configuração manual de rotas e promovendo uma organização de código mais previsível e escalável.
+
+```
+app/
+├── _layout.tsx       # Layout raiz da aplicação (navegação global)
+└── index.tsx         # Tela inicial (rota "/")
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+O layout raiz (`_layout.tsx`) é responsável por instanciar o componente `Stack` do Expo Router, que gerencia a pilha de navegação da aplicação. Esta abordagem é análoga ao modelo de _App Router_ popularizado pelo Next.js no ambiente web.
 
-## Learn more
+### Decisões de Projeto
 
-To learn more about developing your project with Expo, look at the following resources:
+- **Tipagem estática com TypeScript**: adotada em toda a base de código para prevenir erros em tempo de compilação e melhorar a experiência de desenvolvimento com autocompletion e verificação de tipos;
+- **React Compiler ativado** (`reactCompiler: true`): habilitado experimentalmente para otimização automática de re-renderizações, reduzindo a necessidade de `useMemo` e `useCallback` manuais;
+- **Typed Routes** (`typedRoutes: true`): ativa a geração automática de tipos para as rotas do Expo Router, garantindo segurança de navegação em tempo de compilação;
+- **Suporte a gestos e animações nativas**: através do React Native Gesture Handler e Reanimated, as interações do usuário são executadas na thread nativa da UI, evitando bloqueios na thread JavaScript e proporcionando fluidez de 60/120fps.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## Estrutura do Projeto
 
-Join our community of developers creating universal apps.
+```
+procardio-app/
+├── app/                        # Diretório de rotas (Expo Router)
+│   ├── _layout.tsx             # Layout e configuração de navegação raiz
+│   └── index.tsx               # Tela principal da aplicação
+├── assets/                     # Recursos estáticos
+│   └── images/                 # Ícones, splash screen e imagens
+├── scripts/                    # Scripts utilitários de desenvolvimento
+├── app.json                    # Configuração do projeto Expo
+├── tsconfig.json               # Configuração do compilador TypeScript
+├── eslint.config.js            # Configuração do ESLint
+├── package.json                # Dependências e scripts do projeto
+└── README.md                   # Documentação do projeto
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+## Pré-requisitos
+
+Antes de iniciar, certifique-se de que o ambiente de desenvolvimento atende aos seguintes requisitos:
+
+- **Node.js** `>= 20.19.4` (conforme exigido pelas dependências do Metro Bundler)
+- **npm** ou **yarn** (gerenciador de pacotes)
+- **Expo CLI** instalado globalmente ou via `npx`
+- **Expo Go** (aplicativo móvel) para testes em dispositivo físico, ou emuladores Android/iOS configurados
+
+```bash
+# Verificar versão do Node.js
+node --version
+
+# Instalar Expo CLI globalmente (opcional)
+npm install -g expo-cli
+```
+
+---
+
+## Instalação e Execução
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/seu-usuario/procardio-app.git
+cd procardio-app
+```
+
+### 2. Instalar dependências
+
+```bash
+npm install
+```
+
+### 3. Iniciar o servidor de desenvolvimento
+
+```bash
+npx expo start
+```
+
+Após a inicialização, o terminal exibirá um QR Code e as seguintes opções de execução:
+
+| Ação                     | Tecla |
+| ------------------------ | ----- |
+| Abrir no Android         | `a`   |
+| Abrir no iOS             | `i`   |
+| Abrir no navegador (Web) | `w`   |
+| Recarregar o app         | `r`   |
+
+---
+
+## Scripts Disponíveis
+
+Os seguintes scripts estão definidos no `package.json`:
+
+| Script          | Comando                           | Descrição                                        |
+| --------------- | --------------------------------- | ------------------------------------------------ |
+| `start`         | `expo start`                      | Inicia o servidor de desenvolvimento Expo        |
+| `android`       | `expo start --android`            | Inicia e abre diretamente no emulador Android    |
+| `ios`           | `expo start --ios`                | Inicia e abre diretamente no simulador iOS       |
+| `web`           | `expo start --web`                | Inicia a versão web da aplicação                 |
+| `lint`          | `expo lint`                       | Executa o linter ESLint no projeto               |
+| `reset-project` | `node ./scripts/reset-project.js` | Reseta o projeto ao estado inicial (scaffolding) |
+
+---
+
+## Configuração
+
+### `app.json`
+
+O arquivo `app.json` centraliza as configurações do projeto Expo:
+
+- **`scheme`**: `procardioapp` — esquema de deep linking da aplicação;
+- **`userInterfaceStyle`**: `automatic` — suporte automático a modo claro/escuro (Light/Dark Mode);
+- **`newArchEnabled`**: `true` — habilita a Nova Arquitetura do React Native (JSI, Fabric, TurboModules);
+- **`predictiveBackGestureEnabled`**: `false` — desabilita o gesto preditivo de retorno no Android para maior controle de navegação;
+- **`edgeToEdgeEnabled`**: `true` — habilita renderização de borda a borda no Android.
+
+### `tsconfig.json`
+
+Estende a configuração base do Expo (`expo/tsconfig.base`) com:
+
+- **`strict: true`** — ativa todas as verificações de tipo estritas do TypeScript;
+- **`paths`** — alias `@/*` mapeado para a raiz do projeto, simplificando importações absolutas.
+
+---
+
+## Contribuição
+
+Contribuições são bem-vindas. Para contribuir com o projeto, siga o fluxo abaixo:
+
+1. Realize um _fork_ do repositório;
+2. Crie uma branch descritiva: `git checkout -b feature/nome-da-funcionalidade`;
+3. Implemente as alterações seguindo os padrões de código do projeto;
+4. Execute o linter antes de submeter: `npm run lint`;
+5. Abra um _Pull Request_ com uma descrição clara das mudanças realizadas.
+
+---
+
+## Licença
+
+Este projeto está licenciado sob os termos definidos pelo mantenedor. Consulte o arquivo `LICENSE` para mais informações.
+
+---
+
+> **ProCardio App** — Desenvolvido com foco em saúde digital e experiência do usuário.
