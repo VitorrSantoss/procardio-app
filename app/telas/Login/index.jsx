@@ -97,6 +97,15 @@ export default function Login() {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/*"BOTÃO" LOGIN PROFISSIONAL */}
+            <View style={estilos.footerContainer}>
+              <TouchableOpacity style={estilos.footerText}>
+                <Text style={estilos.footerTextBold}>
+                  Fazer login como Profissional
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
