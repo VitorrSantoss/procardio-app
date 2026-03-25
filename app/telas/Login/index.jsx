@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import googleLogo from "../../../assets/images/google_logo.png";
-import logoBranco from "../../../assets/images/procardio_logo_vertical_branco.png";
+import logoBranco from "../../../assets/images/procardio_logo_vertical_branca.png";
 import logoVermelha from "../../../assets/images/procardio_logo_vertical_vermelha.png";
 
 export default function Login() {
