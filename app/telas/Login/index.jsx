@@ -103,7 +103,10 @@ export default function Login() {
 
             {/* BOTÃO DE ENTRAR */}
             {/* VIEW AQUI VAI ALGUM STYLE???*/}
-            <TouchableOpacity style={estilos.loginButton}>
+            <TouchableOpacity
+              style={estilos.loginButton}
+              onPress={() => navigation.navigate("Drawer")}
+            >
               <Text style={estilos.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
 
