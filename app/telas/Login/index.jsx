@@ -1,6 +1,9 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -15,13 +18,49 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import googleLogo from "../../../assets/images/google_logo.png";
 import logoBranco from "../../../assets/images/procardio_logo_vertical_branca.png";
 import logoVermelha from "../../../assets/images/procardio_logo_vertical_vermelha.png";
+import { listarUsuarios } from "../../servicos/usuarios";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
   const navigation = useNavigation();
   const route = useRoute();
 
   const perfil = route.params?.perfil || "paciente";
   const ehProfissional = perfil === "profissional";
+
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    listarUsuarios(setUsuarios);
+  }, []);
+
+  // SIMULAÇÃO DE AUTETICAÇÃO
+  const handleLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
+
+    const usuarioEncontrado = usuarios.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase() && u.senha === senha,
+    );
+
+    if (usuarioEncontrado) {
+      try {
+        await AsyncStorage.setItem(
+          "@procardio_user",
+          JSON.stringify(usuarioEncontrado),
+          navigation.navigate("Drawer"),
+        );
+      } catch (erro) {
+        Alert.alert("Erro", "Não foi possível salvar o usuário: " + erro);
+      }
+    } else {
+      Alert.alert("Erro", "Email ou senha incorretos!");
+    }
+  };
 
   return (
     <SafeAreaView
@@ -71,6 +110,8 @@ export default function Login() {
                 placeholderTextColor={ehProfissional ? "#FFF" : "#ADADAD"}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
               ></TextInput>
             </View>
 
@@ -86,6 +127,8 @@ export default function Login() {
                 placeholder="Digite pelo menos 6 caracteres"
                 placeholderTextColor={ehProfissional ? "#FFF" : "#ADADAD"}
                 secureTextEntry
+                value={senha}
+                onChangeText={setSenha}
               ></TextInput>
             </View>
 
@@ -105,7 +148,7 @@ export default function Login() {
             {/* VIEW AQUI VAI ALGUM STYLE???*/}
             <TouchableOpacity
               style={estilos.loginButton}
-              onPress={() => navigation.navigate("Drawer")}
+              onPress={() => handleLogin()}
             >
               <Text style={estilos.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
