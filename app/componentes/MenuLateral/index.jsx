@@ -1,7 +1,38 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function MenuLateral() {
+  const navigation = useNavigation();
+
+  const [usuario, setUsuario] = useState(null);
+  useEffect(() => {
+    const carregarUsuario = async () => {
+      try {
+        const usuarioLogado = await AsyncStorage.getItem("@procardio_user");
+
+        if (usuarioLogado !== null) {
+          setUsuario(JSON.parse(usuarioLogado));
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar usuário dados do usuário", erro);
+      }
+    };
+
+    carregarUsuario();
+  }, []);
+
+  const handleSair = async () => {
+    try {
+      await AsyncStorage.removeItem("@procardio_user");
+      navigation.navigate("SelecaoPerfil");
+    } catch (erro) {
+      console.error("Erro ao remover dados do usuário", erro);
+    }
+  };
+
   return (
     <View style={estilos.container}>
       <View style={estilos.profileSection}>
@@ -9,10 +40,9 @@ export default function MenuLateral() {
           source={{ uri: "https://i.pravatar.cc/150?img=12" }}
           style={estilos.profilePic}
         />
-        <Text style={estilos.profileName}>Vitor Santos</Text>
+        <Text style={estilos.profileName}>{usuario?.nome}</Text>
       </View>
 
-      {/* TODO: IMPLEMENTAR A LISTA DE INTENS DO MENU */}
       <View style={estilos.menuItemsList}>
         <MenuItem
           icon={"user"}
@@ -21,7 +51,7 @@ export default function MenuLateral() {
         />
         <MenuItem
           icon={"receipt-outline"}
-          label={"Recibos de Pagamentos"}
+          label={"Recibos de Pagamento"}
           IconComponent={Ionicons}
         />
         <MenuItem
@@ -31,25 +61,28 @@ export default function MenuLateral() {
         />
         <MenuItem
           icon={"file-document-outline"}
-          label={"Exames Solicitados"}
+          label={"Editar Perfil"}
           IconComponent={MaterialCommunityIcons}
         />
         <MenuItem
           icon={"bell-outline"}
-          label={"Editar Perfil"}
+          label={"Notificações"}
           IconComponent={MaterialCommunityIcons}
         />
       </View>
 
       <View style={estilos.footer}>
+        <View style={{ borderBottomWidth: 1, borderBottomColor: "#EEE" }}>
+          <MenuItem
+            icon={"help-circle-outline"}
+            label={"Ajuda"}
+            IconComponent={Ionicons}
+          />
+        </View>
         <MenuItem
-          icon={"help-circle-outline"}
-          label={"Ajuda"}
-          IconComponent={Ionicons}
-        />
-        <MenuItem
-          icon={"settings-outline"}
-          label={"Configurações"}
+          icon={"log-out-outline"}
+          label={"Sair"}
+          action={handleSair}
           IconComponent={Ionicons}
         />
       </View>
@@ -57,13 +90,13 @@ export default function MenuLateral() {
   );
 }
 
-function MenuItem({ icon, label, IconComponent }) {
+function MenuItem({ icon, label, IconComponent, action }) {
   return (
-    <TouchableOpacity style={estilos.drawerItem}>
+    <TouchableOpacity style={estilos.drawerItem} onPress={action}>
       <IconComponent
         name={icon}
         size={22}
-        color={"#0063c7"}
+        color="#0063c7"
         style={estilos.itemIcon}
       />
       <Text style={estilos.itemText}>{label}</Text>
@@ -93,10 +126,5 @@ const estilos = StyleSheet.create({
   },
   itemIcon: { marginRight: 20, width: 25, textAlign: "center" },
   itemText: { fontSize: 15, color: "#333" },
-  footer: {
-    borderTopWidth: 1,
-    borderTopColor: "#EEE",
-    paddingTop: 10,
-    paddingBottom: 30,
-  },
+  footer: { paddingTop: 10, paddingBottom: 30 },
 });
