@@ -1,10 +1,17 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { useNavigation } from "expo-router";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const resultados = [
+const RESULTADOS = [
   {
     id: "1",
     nome: "Fábio Almeida",
@@ -59,18 +66,27 @@ export default function ResultadosBusca() {
           style={estilos.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="chevron-back" size={28} color="black" />
+          <Ionicons name="chevron-back" size={28} color={"#000"} />
         </TouchableOpacity>
-        <Text style={estilos.headerTitle}>Busca por Psicólogos</Text>
+        <Text style={estilos.headerTitle}>Busca por psicólogos</Text>
         <View style={{ width: 28 }}></View>
       </View>
+
       <FlatList
-        data={resultados}
+        data={RESULTADOS}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={estilos.card}>
+          <TouchableOpacity
+            style={estilos.card}
+            onPress={() =>
+              navigation.navigate("PerfilProfissional", {
+                idProfissional: item.id,
+              })
+            }
+          >
             <View style={estilos.cardTop}>
-              <Image source={{ uri: item.avatar }} style={estilos.cardImage} />
+              <Image style={estilos.cardImage} source={{ uri: item.avatar }} />
+
               <View style={estilos.cardInfo}>
                 <View style={estilos.cardHeaderRow}>
                   <Text style={estilos.cardName}>{item.nome}</Text>
@@ -82,14 +98,16 @@ export default function ResultadosBusca() {
                     />
                   </TouchableOpacity>
                 </View>
+
                 <Text style={estilos.cardSpecialty}>{item.especialidade}</Text>
+
                 <View style={estilos.ratingContainer}>
                   {[1, 2, 3, 4, 5].map((estrela) => (
                     <FontAwesome
                       key={estrela}
                       name="star"
                       size={12}
-                      color={"#ffd700"}
+                      color={"#FFD700"}
                     />
                   ))}
                   <Text style={estilos.ratingText}>
@@ -104,18 +122,15 @@ export default function ResultadosBusca() {
                     </Text>
                     {item.pagamento}
                   </Text>
-
                   <Text style={estilos.detailText}>
-                    <Text style={estilos.detailLabel}>Consulta:</Text>
+                    <Text style={estilos.detailLabel}>Consulta: </Text>
                     {item.consulta}
                   </Text>
-                  <Text style={estilos.detailText}>
-                    <Text style={estilos.detailLabel}>Modalidade: </Text>
-                    {item.modalidade}
-                  </Text>
+                  <Text style={estilos.detailText}>{item.modalidade}</Text>
                 </View>
               </View>
             </View>
+
             <View style={estilos.availabilityContainer}>
               <Text style={estilos.dateText}>{item.data}</Text>
               <View style={estilos.timeSlotsRow}>
@@ -213,5 +228,5 @@ const estilos = StyleSheet.create({
   },
   timeSlotText: { color: "#FFF", fontSize: 12, fontWeight: "600" },
   noTimeText: { fontSize: 12, color: "#999", fontStyle: "italic" },
-  listContent: { padding: 20, paddingBottom: 30 },
+  listContent: { paddingHorizontal: 20, paddingBottom: 30 },
 });
