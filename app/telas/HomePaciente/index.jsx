@@ -25,12 +25,8 @@ export default function HomePaciente() {
 
   const [profissionais, setProfissionais] = useState([]);
 
-  useEffect(() => {
-    listarProfissionais(setProfissionais);
-  }, []);
-
   const handleFiltrarBusca = (filtros) => {
-    setModalVisivel(false); // oculta o modal
+    setModalVisivel(false); // Oculta o modal
 
     const resultadosFiltrados = profissionais.filter((medico) => {
       let match = true;
@@ -43,7 +39,7 @@ export default function HomePaciente() {
       }
 
       if (filtros.tipoConsulta && filtros.tipoConsulta !== "Ambos") {
-        if (medico.modalidade.includes(filtros.tipoConsulta)) {
+        if (!medico.modalidade.includes(filtros.tipoConsulta)) {
           match = false;
         }
       }
@@ -55,7 +51,7 @@ export default function HomePaciente() {
         match = false;
       }
 
-      if (medico.pagamento && medico.pagamento !== filtros.pagamento) {
+      if (filtros.pagamento && medico.pagamento !== filtros.pagamento) {
         match = false;
       }
 
@@ -74,14 +70,16 @@ export default function HomePaciente() {
           setUsuario(JSON.parse(usuarioLogado));
         }
       } catch (erro) {
-        console.error("Erro ao carregar usuário dados do usuário", erro);
+        console.error("Erro ao carregar dados do usuário: " + erro);
       }
     };
 
     carregarUsuario();
+    listarProfissionais(setProfissionais);
   }, []);
 
-  const saudacao = usuario?.sexo === "M" ? "Bem vindo" : "Bem-vinda";
+  const saudacao = usuario?.sexo === "M" ? "Bem-vindo" : "Bem-vinda";
+
   const primeiroNome = usuario?.nome.split(" ")[0];
 
   return (
@@ -91,7 +89,7 @@ export default function HomePaciente() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={estilos.card}>
-            <Image source={{ uri: item.avatar }} style={estilos.cardImage} />
+            <Image style={estilos.cardImage} source={{ uri: item.avatar }} />
             <View style={estilos.cardInfo}>
               <View style={estilos.cardHeader}>
                 <Text style={estilos.cardName}>{item.nome}</Text>
@@ -99,23 +97,22 @@ export default function HomePaciente() {
                   <Ionicons
                     name={item.favorito ? "heart" : "heart-outline"}
                     size={20}
-                    color={"#ff3b30"}
+                    color={"#FF3B30"}
                   />
                 </TouchableOpacity>
               </View>
               <Text style={estilos.cardSpecialty}>{item.especialidade}</Text>
-
               <View style={estilos.ratingContainer}>
                 {NOTAS.map((nota) => (
                   <FontAwesome
                     key={nota}
                     name="star"
                     size={12}
-                    color="#ffb700"
+                    color={"#FFD700"}
                   />
                 ))}
                 <Text style={estilos.ratingText}>
-                  {item.avaliacao} | {item.reviews}
+                  {item.avaliacao} | {item.reviews} avaliações
                 </Text>
               </View>
             </View>
@@ -131,7 +128,6 @@ export default function HomePaciente() {
                 {saudacao},{" "}
                 <Text style={estilos.greetingName}>{primeiroNome}</Text>
               </Text>
-
               <Image
                 source={{ uri: "https://i.pravatar.cc/150?img=12" }}
                 style={estilos.profilePic}
@@ -139,22 +135,22 @@ export default function HomePaciente() {
             </View>
 
             <Text style={estilos.sectionTitle}>
-              Em busca de um profissional
+              Em busca de um profissional?
             </Text>
 
             <TouchableOpacity
               style={estilos.searchContainer}
-              activeOpacity={0.5}
+              activeOpacity={0.8}
               onPress={() => setModalVisivel(true)}
             >
               <Ionicons
                 name="search"
                 size={20}
-                color={"#0063c7"}
+                color={"#0063C7"}
                 style={estilos.searchIcon}
               />
-              <Text style={estilos.searchInput}>
-                Encontre sua especiallidade desejada
+              <Text style={estilos.searchText}>
+                Encontre sua especialidade desejada
               </Text>
             </TouchableOpacity>
 
@@ -164,6 +160,7 @@ export default function HomePaciente() {
         contentContainerStyle={estilos.listContent}
         showsVerticalScrollIndicator={false}
       />
+
       <FiltroModal
         visivel={modalVisivel}
         aoFechar={() => setModalVisivel(false)}
@@ -231,12 +228,7 @@ const estilos = StyleSheet.create({
     alignItems: "center",
   },
   cardName: { fontSize: 16, fontWeight: "bold", color: "#0056b3" },
-  cardSpecialty: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 2,
-    marginBottom: 6,
-  },
+  cardSpecialty: { fontSize: 13, color: "#666", marginTop: 2, marginBottom: 6 },
   ratingContainer: { flexDirection: "row", alignItems: "center" },
   ratingText: { fontSize: 12, color: "#666", marginLeft: 5 },
   bottomTabs: {

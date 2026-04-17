@@ -17,7 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import googleLogo from "../../../assets/images/google_logo.png";
 import logoBranco from "../../../assets/images/procardio_logo_vertical_branca.png";
-import logoVermelha from "../../../assets/images/procardio_logo_vertical_vermelha.png";
+import logoVermelho from "../../../assets/images/procardio_logo_vertical_vermelha.png";
 import { listarUsuarios } from "../../servicos/usuarios";
 
 export default function Login() {
@@ -36,10 +36,9 @@ export default function Login() {
     listarUsuarios(setUsuarios);
   }, []);
 
-  // SIMULAÇÃO DE AUTETICAÇÃO
   const handleLogin = async () => {
     if (!email || !senha) {
-      Alert.alert("Atenção", "Preencha todos os campos!");
+      Alert.alert("Atenção", "Por favor, preencha o e-mail e a senha.");
       return;
     }
 
@@ -52,13 +51,14 @@ export default function Login() {
         await AsyncStorage.setItem(
           "@procardio_user",
           JSON.stringify(usuarioEncontrado),
-          navigation.navigate("Drawer"),
         );
+
+        navigation.navigate("Drawer");
       } catch (erro) {
-        Alert.alert("Erro", "Não foi possível salvar o usuário: " + erro);
+        Alert.alert("Erro", "Não possível salvar os dados da sessão: " + erro);
       }
     } else {
-      Alert.alert("Erro", "Email ou senha incorretos!");
+      Alert.alert("Erro", "E-mail ou senha inválidos.");
     }
   };
 
@@ -74,7 +74,6 @@ export default function Login() {
           style={estilos.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-          {/* BOTÃO DE VOLTAR */}
           <TouchableOpacity
             style={estilos.backButton}
             onPress={() => navigation.goBack()}
@@ -86,18 +85,15 @@ export default function Login() {
             />
           </TouchableOpacity>
 
-          {/* LOGOMARCA */}
           <View style={estilos.logoContainer}>
             <Image
-              source={ehProfissional ? logoBranco : logoVermelha}
+              source={ehProfissional ? logoBranco : logoVermelho}
               style={estilos.logo}
               resizeMode="contain"
             />
           </View>
 
-          {/* CONTAINER (abaixo da imagem) */}
           <View style={estilos.formContainer}>
-            {/* FORMS DO EMAIL */}
             <View style={estilos.inputGroup}>
               <Text
                 style={[estilos.label, ehProfissional && estilos.textWhite]}
@@ -112,10 +108,9 @@ export default function Login() {
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
-              ></TextInput>
+              />
             </View>
 
-            {/* FORMS DA SENHA */}
             <View style={estilos.inputGroup}>
               <Text
                 style={[estilos.label, ehProfissional && estilos.textWhite]}
@@ -129,10 +124,9 @@ export default function Login() {
                 secureTextEntry
                 value={senha}
                 onChangeText={setSenha}
-              ></TextInput>
+              />
             </View>
 
-            {/* ESQUECI SENHA */}
             <TouchableOpacity style={estilos.forgotPassword}>
               <Text
                 style={[
@@ -140,20 +134,14 @@ export default function Login() {
                   ehProfissional && estilos.textWhite,
                 ]}
               >
-                Esqueci minha senha
+                Esqueci a senha
               </Text>
             </TouchableOpacity>
 
-            {/* BOTÃO DE ENTRAR */}
-            {/* VIEW AQUI VAI ALGUM STYLE???*/}
-            <TouchableOpacity
-              style={estilos.loginButton}
-              onPress={() => handleLogin()}
-            >
+            <TouchableOpacity style={estilos.loginButton} onPress={handleLogin}>
               <Text style={estilos.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
 
-            {/*"BOTÃO" PARA CADASTRAR */}
             <TouchableOpacity style={estilos.registerLink}>
               <Text
                 style={[
@@ -164,42 +152,38 @@ export default function Login() {
                 Quero me cadastrar
               </Text>
             </TouchableOpacity>
+          </View>
 
-            <View style={estilos.socialContainer}>
-              {/*BOTÃO DO GOOGLE */}
-              <TouchableOpacity style={estilos.googleButton}>
-                <Image source={googleLogo} style={estilos.socialIconImage} />
-                <Text style={estilos.googleButtonText}>Entrar com Google</Text>
-              </TouchableOpacity>
+          <View style={estilos.socialContainer}>
+            <TouchableOpacity style={estilos.googleButton}>
+              <Image source={googleLogo} style={estilos.socialIconImage} />
+              <Text style={estilos.googleButtonText}>Entrar com Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={estilos.facebookButton}>
+              <FontAwesome5
+                name="facebook-f"
+                color="#FFF"
+                size={20}
+                style={estilos.socialIcon}
+              />
+              <Text style={estilos.facebookButtonText}>
+                Entrar com Facebook
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-              {/*BOTÃO FACEBOOK */}
-              <TouchableOpacity style={estilos.facebookButton}>
-                <FontAwesome5
-                  name="facebook-f"
-                  size={18}
-                  color="#fff"
-                  style={estilos.socialIcon}
-                />
-                <Text style={estilos.facebookButtonText}>
-                  Entrar com Facebook
-                </Text>
+          {!ehProfissional && (
+            <View style={estilos.footerContainer}>
+              <Text style={estilos.footerText}>Fazer login como</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Login", { perfil: "profissional" })
+                }
+              >
+                <Text style={estilos.footerTextBold}>Profissional</Text>
               </TouchableOpacity>
             </View>
-
-            {/*"BOTÃO" LOGIN PROFISSIONAL */}
-            {!ehProfissional && (
-              <View style={estilos.footerContainer}>
-                <Text style={estilos.footerText}>Fazer login como</Text>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("Login", { perfil: "profissional" })
-                  }
-                >
-                  <Text style={estilos.footerTextBold}>Profissional</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -212,7 +196,6 @@ const estilos = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   safeAreaPro: {
-    flex: 1,
     backgroundColor: "#003d7a",
   },
   container: {
@@ -234,8 +217,8 @@ const estilos = StyleSheet.create({
     marginBottom: 40,
   },
   logo: {
-    width: 217,
-    height: 217,
+    width: 150,
+    height: 120,
   },
   formContainer: {
     width: "100%",
@@ -291,7 +274,7 @@ const estilos = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#E9F4FF",
+    backgroundColor: "#EDF2F7",
     paddingVertical: 14,
     borderRadius: 8,
     marginBottom: 16,
@@ -303,7 +286,7 @@ const estilos = StyleSheet.create({
     left: 20,
   },
   googleButtonText: {
-    color: "#003D7A",
+    color: "#333",
     fontSize: 15,
     fontWeight: "500",
   },
@@ -311,7 +294,7 @@ const estilos = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#4460A0",
+    backgroundColor: "#3b5998",
     paddingVertical: 14,
     borderRadius: 8,
     marginBottom: 40,
@@ -328,7 +311,7 @@ const estilos = StyleSheet.create({
   footerContainer: {
     alignItems: "center",
     marginTop: "auto",
-    marginBottom: 35,
+    marginBottom: 32,
     flexDirection: "row",
     justifyContent: "center",
     gap: 4,
@@ -345,13 +328,7 @@ const estilos = StyleSheet.create({
     color: "#FFF",
   },
   inputPro: {
-    borderBottomColor: "FFF",
+    borderBottomColor: "#FFF",
     color: "#FFF",
-  },
-  loginButtonPro: {
-    backgroundColor: "#FFF",
-  },
-  loginButtonTextPro: {
-    color: "#0063c7",
   },
 });
